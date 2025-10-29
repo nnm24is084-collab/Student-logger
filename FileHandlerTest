@@ -1,0 +1,42 @@
+package scorelogger;
+
+import org.junit.jupiter.api.*;
+import java.io.*;
+import java.nio.file.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class FileHandlerTest {
+    private static final String TEMP_FILE = "test_student_records.csv";
+
+    @BeforeEach
+    void cleanUp() throws IOException {
+        Files.deleteIfExists(Paths.get(TEMP_FILE));
+    }
+
+    @Test
+    void testSingleRecordWrite() throws IOException {
+        FileHandler handler = new FileHandler(TEMP_FILE);
+        Learner l1 = new Learner("TestLearner", 501, 90);
+        handler.saveRecord(l1);
+
+        String data = Files.readString(Paths.get(TEMP_FILE));
+        assertTrue(data.contains("TestLearner,501,90"));
+    }
+
+    @Test
+    void testParallelThreadsWrite() throws InterruptedException, IOException {
+        FileHandler handler = new FileHandler(TEMP_FILE);
+
+        Thread t1 = new Thread(() -> handler.saveRecord(new Learner("Alpha", 1, 80)));
+        Thread t2 = new Thread(() -> handler.saveRecord(new Learner("Beta", 2, 85)));
+
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+
+        String content = Files.readString(Paths.get(TEMP_FILE));
+        assertTrue(content.contains("Alpha,1,80"));
+        assertTrue(content.contains("Beta,2,85"));
+    }
+}

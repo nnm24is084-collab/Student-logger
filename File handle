@@ -1,0 +1,21 @@
+
+package scorelogger;
+
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class FileHandler {
+    private final String targetFile;
+
+    public FileHandler(String targetFile) {
+        this.targetFile = targetFile;
+    }
+    public synchronized void saveRecord(Learner learner) {
+        try (FileWriter fw = new FileWriter(targetFile, true)) {
+            fw.write(learner.toDataLine());
+            System.out.println("✔ Record added for: " + learner.toDataLine().trim());
+        } catch (IOException e) {
+            System.err.println("⚠ Error while writing to file: " + e.getMessage());
+        }
+    }
+}

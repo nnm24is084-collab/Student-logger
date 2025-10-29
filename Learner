@@ -1,0 +1,21 @@
+package scorelogger;
+
+public class Learner {
+	 private String studentName;
+	    private int rollNo;
+	    private int obtainedMarks;
+
+	    public Learner(String studentName, int rollNo, int obtainedMarks) {
+	        this.studentName = studentName;
+	        this.rollNo = rollNo;
+	        this.obtainedMarks = obtainedMarks;
+	    }
+
+	    
+	    public String toDataLine() {
+	        return studentName + "," + rollNo + "," + obtainedMarks + System.lineSeparator();
+	    }
+	}
+
+
+
